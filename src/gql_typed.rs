@@ -806,6 +806,150 @@ pub struct CloudResponse {
     pub error: Option<String>,
 }
 
+// ── arg-bearing read queries (cynic QueryVariables) ───────────────────────────
+
+#[derive(cynic::QueryVariables)]
+pub struct PrefixedIdVars {
+    pub id: PrefixedID,
+}
+
+#[derive(cynic::QueryVariables)]
+pub struct StringIdVars {
+    pub id: String,
+}
+
+#[derive(cynic::QueryVariables)]
+pub struct TokenVars {
+    pub token: String,
+}
+
+#[derive(cynic::QueryVariables)]
+pub struct OperationIdVars {
+    pub operation_id: cynic::Id,
+}
+
+#[derive(cynic::QueryVariables)]
+pub struct RolesVars {
+    pub roles: Vec<Role>,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(
+    graphql_type = "Query",
+    variables = "PrefixedIdVars",
+    rename_all = "camelCase"
+)]
+#[serde(rename_all = "camelCase")]
+pub struct ApiKeyByIdQuery {
+    #[arguments(id: $id)]
+    pub api_key: Option<ApiKey>,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(graphql_type = "Query", variables = "PrefixedIdVars")]
+#[serde(rename_all = "camelCase")]
+pub struct DiskByIdQuery {
+    #[arguments(id: $id)]
+    pub disk: AssignableDisk,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(
+    graphql_type = "Query",
+    variables = "PrefixedIdVars",
+    rename_all = "camelCase"
+)]
+#[serde(rename_all = "camelCase")]
+pub struct OidcProviderByIdQuery {
+    #[arguments(id: $id)]
+    pub oidc_provider: Option<OidcProvider>,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(
+    graphql_type = "Query",
+    variables = "StringIdVars",
+    rename_all = "camelCase"
+)]
+#[serde(rename_all = "camelCase")]
+pub struct UpsDeviceByIdQuery {
+    #[arguments(id: $id)]
+    pub ups_device_by_id: Option<UpsDevice>,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(graphql_type = "UPSDevice", rename_all = "camelCase")]
+#[serde(rename_all = "camelCase")]
+pub struct UpsDevice {
+    pub id: cynic::Id,
+    pub name: String,
+    pub model: String,
+    pub status: String,
+    pub battery: UpsBattery,
+    pub power: UpsPower,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(graphql_type = "UPSBattery", rename_all = "camelCase")]
+#[serde(rename_all = "camelCase")]
+pub struct UpsBattery {
+    pub charge_level: i32,
+    pub estimated_runtime: i32,
+    pub health: String,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(graphql_type = "UPSPower", rename_all = "camelCase")]
+#[serde(rename_all = "camelCase")]
+pub struct UpsPower {
+    pub input_voltage: f64,
+    pub output_voltage: f64,
+    pub load_percentage: i32,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(
+    graphql_type = "Query",
+    variables = "OperationIdVars",
+    rename_all = "camelCase"
+)]
+#[serde(rename_all = "camelCase")]
+pub struct PluginInstallOperationByIdQuery {
+    #[arguments(operationId: $operation_id)]
+    pub plugin_install_operation: Option<PluginInstallOperation>,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(
+    graphql_type = "Query",
+    variables = "TokenVars",
+    rename_all = "camelCase"
+)]
+#[serde(rename_all = "camelCase")]
+pub struct ValidateOidcSessionQuery {
+    #[arguments(token: $token)]
+    pub validate_oidc_session: OidcSessionValidation,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct OidcSessionValidation {
+    pub valid: bool,
+    pub username: Option<String>,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(
+    graphql_type = "Query",
+    variables = "RolesVars",
+    rename_all = "camelCase"
+)]
+#[serde(rename_all = "camelCase")]
+pub struct PermissionsForRolesQuery {
+    #[arguments(roles: $roles)]
+    pub get_permissions_for_roles: Vec<Permission>,
+}
+
 // ── enums (cynic checks them vs the SDL; serde does the JSON round-trip) ──────
 
 macro_rules! gql_enum {

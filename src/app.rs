@@ -225,6 +225,34 @@ impl UnraidService {
         self.client.cloud().await
     }
 
+    pub async fn api_key(&self, id: &str) -> Result<Value> {
+        self.client.api_key(id).await
+    }
+
+    pub async fn disk(&self, id: &str) -> Result<Value> {
+        self.client.disk(id).await
+    }
+
+    pub async fn oidc_provider(&self, id: &str) -> Result<Value> {
+        self.client.oidc_provider(id).await
+    }
+
+    pub async fn ups_device_by_id(&self, id: &str) -> Result<Value> {
+        self.client.ups_device_by_id(id).await
+    }
+
+    pub async fn plugin_install_operation(&self, id: &str) -> Result<Value> {
+        self.client.plugin_install_operation(id).await
+    }
+
+    pub async fn validate_oidc_session(&self, token: &str) -> Result<Value> {
+        self.client.validate_oidc_session(token).await
+    }
+
+    pub async fn get_permissions_for_roles(&self, roles: &[String]) -> Result<Value> {
+        self.client.get_permissions_for_roles(roles).await
+    }
+
     pub async fn rclone(&self) -> Result<Value> {
         self.client.rclone().await
     }

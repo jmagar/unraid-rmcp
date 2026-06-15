@@ -92,6 +92,22 @@ pub async fn run(service: &UnraidService, cmd: CliCommand, json: bool) -> Result
             service.plugin_install_operations().await?,
         ),
         CliCommand::Cloud => ("cloud", service.cloud().await?),
+        CliCommand::ApiKey(id) => ("api_key", service.api_key(&id).await?),
+        CliCommand::Disk(id) => ("disk", service.disk(&id).await?),
+        CliCommand::OidcProvider(id) => ("oidc_provider", service.oidc_provider(&id).await?),
+        CliCommand::UpsDeviceById(id) => ("ups_device_by_id", service.ups_device_by_id(&id).await?),
+        CliCommand::PluginInstallOperation(id) => (
+            "plugin_install_operation",
+            service.plugin_install_operation(&id).await?,
+        ),
+        CliCommand::ValidateOidcSession(token) => (
+            "validate_oidc_session",
+            service.validate_oidc_session(&token).await?,
+        ),
+        CliCommand::GetPermissionsForRoles(roles) => (
+            "get_permissions_for_roles",
+            service.get_permissions_for_roles(&roles).await?,
+        ),
         // Doctor and setup are intercepted in main.rs before reaching dispatch.
         CliCommand::Doctor | CliCommand::Setup(_) => {
             unreachable!("doctor/setup are handled before service construction")

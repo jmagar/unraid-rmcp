@@ -226,6 +226,34 @@ pub(super) const ACTIONS: &[ActionSpec] = &[
         read_only: true,
     },
     ActionSpec {
+        name: "api_key",
+        read_only: true,
+    },
+    ActionSpec {
+        name: "disk",
+        read_only: true,
+    },
+    ActionSpec {
+        name: "oidc_provider",
+        read_only: true,
+    },
+    ActionSpec {
+        name: "ups_device_by_id",
+        read_only: true,
+    },
+    ActionSpec {
+        name: "plugin_install_operation",
+        read_only: true,
+    },
+    ActionSpec {
+        name: "validate_oidc_session",
+        read_only: true,
+    },
+    ActionSpec {
+        name: "get_permissions_for_roles",
+        read_only: true,
+    },
+    ActionSpec {
         name: "status",
         read_only: true,
     },
@@ -299,6 +327,15 @@ pub(super) fn tool_definitions() -> Vec<Value> {
                 "name": {
                     "type": "string",
                     "description": "Filter shares or plugins by name substring (case-insensitive)."
+                },
+                "token": {
+                    "type": "string",
+                    "description": "Session token — required for action=validate_oidc_session."
+                },
+                "roles": {
+                    "type": "array",
+                    "items": { "type": "string" },
+                    "description": "Role names — required for action=get_permissions_for_roles."
                 }
             },
             "required": ["action"]

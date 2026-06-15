@@ -1312,5 +1312,152 @@
         "https://tower.local"
       ]
     }
+  },
+  "api_key": {
+    "apiKey": {
+      "id": "abc123:key-001",
+      "key": "unraid_ak_4f9c2e1b7a6d8390",
+      "name": "homelab-readonly",
+      "description": "Read-only key for monitoring dashboards",
+      "roles": [
+        "VIEWER"
+      ],
+      "createdAt": "2026-02-14T09:21:00.000Z",
+      "permissions": [
+        {
+          "resource": "ARRAY",
+          "actions": [
+            "READ_ANY"
+          ]
+        },
+        {
+          "resource": "DISK",
+          "actions": [
+            "READ_ANY"
+          ]
+        },
+        {
+          "resource": "DOCKER",
+          "actions": [
+            "READ_ANY"
+          ]
+        }
+      ]
+    }
+  },
+  "disk": {
+    "disk": {
+      "id": "0000-0000-DISK-0001",
+      "device": "/dev/sde",
+      "type": "HDD",
+      "name": "WDC_WD80EFAX",
+      "vendor": "Western Digital",
+      "size": 8001563222016,
+      "serialNum": "VAGH9012",
+      "interfaceType": "SATA",
+      "smartStatus": "OK",
+      "temperature": 31,
+      "isSpinning": true,
+      "partitions": [
+        {
+          "name": "sde1",
+          "fsType": "XFS",
+          "size": 8001561124864
+        }
+      ]
+    }
+  },
+  "oidc_provider": {
+    "oidcProvider": {
+      "id": "oidc-provider-google",
+      "name": "Google",
+      "clientId": "1234567890-abcdefg.apps.googleusercontent.com",
+      "issuer": "https://accounts.google.com",
+      "authorizationEndpoint": "https://accounts.google.com/o/oauth2/v2/auth",
+      "tokenEndpoint": "https://oauth2.googleapis.com/token",
+      "jwksUri": "https://www.googleapis.com/oauth2/v3/certs",
+      "scopes": [
+        "openid",
+        "profile",
+        "email"
+      ],
+      "authorizationRules": [
+        {
+          "claim": "email",
+          "operator": "ENDS_WITH",
+          "value": [
+            "@example.com"
+          ]
+        },
+        {
+          "claim": "hd",
+          "operator": "EQUALS",
+          "value": [
+            "example.com"
+          ]
+        }
+      ],
+      "authorizationRuleMode": "OR",
+      "buttonText": "Sign in with Google",
+      "buttonIcon": "https://www.google.com/favicon.ico",
+      "buttonVariant": "outline"
+    }
+  },
+  "ups_device_by_id": {
+    "upsDeviceById": {
+      "id": "ups-1",
+      "name": "APC Back-UPS",
+      "model": "Back-UPS ES 700G",
+      "status": "Online",
+      "battery": {
+        "chargeLevel": 100,
+        "estimatedRuntime": 2820,
+        "health": "Good"
+      },
+      "power": {
+        "inputVoltage": 121.0,
+        "outputVoltage": 121.0,
+        "loadPercentage": 28
+      }
+    }
+  },
+  "plugin_install_operation": {
+    "pluginInstallOperation": {
+      "id": "op-1a2b3c",
+      "url": "https://raw.githubusercontent.com/example/plugin/master/plugin.plg",
+      "name": "community.applications",
+      "status": "SUCCEEDED",
+      "createdAt": "2026-06-15T17:50:00.000Z",
+      "updatedAt": "2026-06-15T17:51:10.000Z",
+      "finishedAt": "2026-06-15T17:51:10.000Z",
+      "output": [
+        "Downloading plugin.plg",
+        "Verifying signature",
+        "Installation complete"
+      ]
+    }
+  },
+  "validate_oidc_session": {
+    "validateOidcSession": {
+      "valid": true,
+      "username": "jmagar"
+    }
+  },
+  "get_permissions_for_roles": {
+    "getPermissionsForRoles": [
+      {
+        "resource": "ARRAY",
+        "actions": [
+          "READ_ANY"
+        ]
+      },
+      {
+        "resource": "DOCKER",
+        "actions": [
+          "READ_ANY",
+          "UPDATE_ANY"
+        ]
+      }
+    ]
   }
 }

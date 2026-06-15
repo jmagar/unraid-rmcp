@@ -77,6 +77,17 @@ impl CliCommand {
             ["assignable-disks"] => Self::AssignableDisks,
             ["plugin-install-operations"] | ["plugin-ops"] => Self::PluginInstallOperations,
             ["cloud"] => Self::Cloud,
+            ["api-key", id] => Self::ApiKey(id.to_string()),
+            ["disk", id] => Self::Disk(id.to_string()),
+            ["oidc-provider", id] => Self::OidcProvider(id.to_string()),
+            ["ups-device", id] | ["ups-device-by-id", id] => Self::UpsDeviceById(id.to_string()),
+            ["plugin-install-operation", id] | ["plugin-op", id] => {
+                Self::PluginInstallOperation(id.to_string())
+            }
+            ["validate-oidc-session", token] => Self::ValidateOidcSession(token.to_string()),
+            ["get-permissions-for-roles", roles @ ..] if !roles.is_empty() => {
+                Self::GetPermissionsForRoles(roles.iter().map(|r| r.to_string()).collect())
+            }
             ["doctor"] => Self::Doctor,
             ["setup", "check"] => Self::Setup(SetupCommand::Check),
             ["setup", "repair"] => Self::Setup(SetupCommand::Repair),

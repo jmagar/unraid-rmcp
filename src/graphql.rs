@@ -348,6 +348,69 @@ impl UnraidClient {
             .await
     }
 
+    pub async fn api_key(&self, id: &str) -> Result<Value> {
+        use crate::gql_typed::{ApiKeyByIdQuery, PrefixedID, PrefixedIdVars};
+        use cynic::QueryBuilder;
+        self.run_typed(ApiKeyByIdQuery::build(PrefixedIdVars {
+            id: PrefixedID(id.to_string()),
+        }))
+        .await
+    }
+
+    pub async fn disk(&self, id: &str) -> Result<Value> {
+        use crate::gql_typed::{DiskByIdQuery, PrefixedID, PrefixedIdVars};
+        use cynic::QueryBuilder;
+        self.run_typed(DiskByIdQuery::build(PrefixedIdVars {
+            id: PrefixedID(id.to_string()),
+        }))
+        .await
+    }
+
+    pub async fn oidc_provider(&self, id: &str) -> Result<Value> {
+        use crate::gql_typed::{OidcProviderByIdQuery, PrefixedID, PrefixedIdVars};
+        use cynic::QueryBuilder;
+        self.run_typed(OidcProviderByIdQuery::build(PrefixedIdVars {
+            id: PrefixedID(id.to_string()),
+        }))
+        .await
+    }
+
+    pub async fn ups_device_by_id(&self, id: &str) -> Result<Value> {
+        use crate::gql_typed::{StringIdVars, UpsDeviceByIdQuery};
+        use cynic::QueryBuilder;
+        self.run_typed(UpsDeviceByIdQuery::build(StringIdVars {
+            id: id.to_string(),
+        }))
+        .await
+    }
+
+    pub async fn plugin_install_operation(&self, id: &str) -> Result<Value> {
+        use crate::gql_typed::{OperationIdVars, PluginInstallOperationByIdQuery};
+        use cynic::QueryBuilder;
+        self.run_typed(PluginInstallOperationByIdQuery::build(OperationIdVars {
+            operation_id: cynic::Id::new(id),
+        }))
+        .await
+    }
+
+    pub async fn validate_oidc_session(&self, token: &str) -> Result<Value> {
+        use crate::gql_typed::{TokenVars, ValidateOidcSessionQuery};
+        use cynic::QueryBuilder;
+        self.run_typed(ValidateOidcSessionQuery::build(TokenVars {
+            token: token.to_string(),
+        }))
+        .await
+    }
+
+    pub async fn get_permissions_for_roles(&self, roles: &[String]) -> Result<Value> {
+        use crate::gql_typed::{PermissionsForRolesQuery, Role, RolesVars};
+        use cynic::QueryBuilder;
+        let roles: Vec<Role> = serde_json::from_value(serde_json::to_value(roles)?)
+            .map_err(|e| UpstreamError::Other(format!("invalid role value: {e}")))?;
+        self.run_typed(PermissionsForRolesQuery::build(RolesVars { roles }))
+            .await
+    }
+
     // ── queries ───────────────────────────────────────────────────────────────
 
     pub async fn array(&self) -> Result<Value> {

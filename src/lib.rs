@@ -170,6 +170,21 @@ pub mod testing {
                 let args = match name {
                     "docker_logs" => json!({ "action": "docker_logs", "id": "a1b2c3d4e5f6" }),
                     "log_file" => json!({ "action": "log_file", "path": "/var/log/syslog" }),
+                    "api_key" => json!({ "action": "api_key", "id": "abc123:key-001" }),
+                    "disk" => json!({ "action": "disk", "id": "disk-1" }),
+                    "oidc_provider" => {
+                        json!({ "action": "oidc_provider", "id": "oidc-provider-google" })
+                    }
+                    "ups_device_by_id" => json!({ "action": "ups_device_by_id", "id": "ups-1" }),
+                    "plugin_install_operation" => {
+                        json!({ "action": "plugin_install_operation", "id": "op-1a2b3c" })
+                    }
+                    "validate_oidc_session" => {
+                        json!({ "action": "validate_oidc_session", "token": "session-token-xyz" })
+                    }
+                    "get_permissions_for_roles" => {
+                        json!({ "action": "get_permissions_for_roles", "roles": ["ADMIN"] })
+                    }
                     _ => json!({ "action": name }),
                 };
                 (name, args)

@@ -143,6 +143,12 @@ async fn dispatch(state: &AppState, args: Value) -> Result<Value, ToolError> {
 /// Run the action. Argument-validation / unknown-action failures are returned as
 /// [`ToolError::InvalidParams`]; each service call's `anyhow` error is classified
 /// by its typed source into the matching upstream/internal [`ToolError`] variant.
+/// Extract the required `id` argument for a single-entity lookup action.
+fn require_id(args: &Value, action: &str) -> Result<String, ToolError> {
+    string_arg(args, "id")
+        .ok_or_else(|| ToolError::InvalidParams(format!("\"id\" is required for action={action}.")))
+}
+
 async fn dispatch_action(state: &AppState, action: &str, args: &Value) -> Result<Value, ToolError> {
     // Helper: run a service call and classify any failure by its typed source.
     //
@@ -313,6 +319,55 @@ async fn dispatch_action(state: &AppState, action: &str, args: &Value) -> Result
         "assignable_disks" => svc!(state.service.assignable_disks()),
         "plugin_install_operations" => svc!(state.service.plugin_install_operations()),
         "cloud" => svc!(state.service.cloud()),
+
+        // ── arg-bearing read actions ──
+        "api_key" => {
+            let id = require_id(args, "api_key")?;
+            svc!(state.service.api_key(&id))
+        }
+        "disk" => {
+            let id = require_id(args, "disk")?;
+            svc!(state.service.disk(&id))
+        }
+        "oidc_provider" => {
+            let id = require_id(args, "oidc_provider")?;
+            svc!(state.service.oidc_provider(&id))
+        }
+        "ups_device_by_id" => {
+            let id = require_id(args, "ups_device_by_id")?;
+            svc!(state.service.ups_device_by_id(&id))
+        }
+        "plugin_install_operation" => {
+            let id = require_id(args, "plugin_install_operation")?;
+            svc!(state.service.plugin_install_operation(&id))
+        }
+        "validate_oidc_session" => {
+            let token = string_arg(args, "token").ok_or_else(|| {
+                ToolError::InvalidParams(
+                    "\"token\" is required for action=validate_oidc_session.".to_string(),
+                )
+            })?;
+            svc!(state.service.validate_oidc_session(&token))
+        }
+        "get_permissions_for_roles" => {
+            let roles = args
+                .get("roles")
+                .and_then(|v| v.as_array())
+                .map(|a| {
+                    a.iter()
+                        .filter_map(|x| x.as_str().map(String::from))
+                        .collect::<Vec<_>>()
+                })
+                .filter(|v| !v.is_empty())
+                .ok_or_else(|| {
+                    ToolError::InvalidParams(
+                        "\"roles\" (a non-empty array of role names) is required for \
+                         action=get_permissions_for_roles."
+                            .to_string(),
+                    )
+                })?;
+            svc!(state.service.get_permissions_for_roles(&roles))
+        }
 
         "status" => {
             let snap = state.counters.snapshot();

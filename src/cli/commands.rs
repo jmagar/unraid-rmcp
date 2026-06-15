@@ -60,6 +60,13 @@ pub enum CliCommand {
     AssignableDisks,
     PluginInstallOperations,
     Cloud,
+    ApiKey(String),
+    Disk(String),
+    OidcProvider(String),
+    UpsDeviceById(String),
+    PluginInstallOperation(String),
+    ValidateOidcSession(String),
+    GetPermissionsForRoles(Vec<String>),
     Doctor,
     Setup(SetupCommand),
 }
