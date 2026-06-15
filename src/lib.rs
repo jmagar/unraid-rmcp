@@ -3,6 +3,11 @@ pub mod config;
 pub mod graphql;
 pub mod logging;
 pub mod mcp;
+
+/// Scenario-driven mock of the Unraid GraphQL upstream. Test/dev only.
+#[cfg(any(test, feature = "test-support"))]
+pub mod mock;
+
 pub mod observability;
 pub mod token_limit;
 

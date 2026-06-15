@@ -112,6 +112,58 @@ For actions with parameters (like `docker_logs` with `id` and `tail`), follow th
 | `tests/rmcp_compat.rs` | RMCP stateless JSON-response mode, SSE negotiation |
 | `tests/stdio_mcp.rs` | stdio child-process transport: `tools/list` then `tools/call` |
 | `tests/spike_rmcp_extensions.rs` | Axum extension propagation into tool handlers |
+| `tests/scenarios.rs` | Scenario-driven mock: every action dispatches across all scenarios (also proves `classify_query` routing) |
+| `tests/schema_contract.rs` | Validates every `graphql.rs` query AND every fixture against the vendored Unraid SDL (`apollo-compiler`) — the drift guardrail |
+
+## Mocking the Unraid upstream (no real server needed)
+
+Because the Rust side treats every GraphQL response as an opaque `Value`, a
+faithful mock just has to recognise *which* query is asked and return canned
+JSON. That lives in `src/mock.rs` (gated behind the `test-support` feature) with
+one source of truth: `tests/fixtures/scenarios/*.json`.
+
+- **Fixtures.** `healthy.json` is a full realistic snapshot (all 24 query
+  payloads). `degraded.json`, `parity-running.json`, `disk-failing.json` are
+  thin overlays that replace only the fixture keys that differ; `_`-prefixed
+  keys are docs and ignored. `Scenario::load` merges base + overlay.
+- **Routing.** `mock::classify_query(query)` **parses the query AST**
+  (`graphql-parser`, optional dep behind `test-support`) and routes on the
+  operation's real root field name (`upsDevices` → `ups`). The only shared root
+  field is `docker`, disambiguated by sub-selection (`logs` → `docker_logs`).
+  Robust to whitespace/reordering — not substring matching.
+- **Fixture field types mirror the real SDL** (`api/generated-schema.graphql` in
+  `unraid/api`), not a guess. The split that matters:
+  - `BigInt` scalars arrive as JSON **strings** (KB): `ArrayDisk.size`/`fsSize`/
+    `fsFree`/`fsUsed`/`numReads`/`numWrites`/`numErrors`, `Share.free`/`used`/
+    `size`, `MemoryLayout.size`, `MemoryUtilization.*`, `Capacity.*`.
+  - `Float!`/`Int!` arrive as JSON **numbers**: `Disk.size`/`DiskPartition.size`
+    (bytes), `LogFile.size` (bytes).
+  - Enums are exact: `DiskSmartStatus` = `{OK, UNKNOWN}` (no `FAILING`);
+    `ArrayDiskType` = `DATA|PARITY|CACHE|BOOT|FLASH` (UPPERCASE);
+    `ArrayDiskStatus` = `DISK_OK|DISK_DSBL|…`; `ArrayDiskFsColor` = `GREEN_ON|…`.
+  - A failing disk is signalled by `UNKNOWN` SMART + array `numErrors`/`DISK_DSBL`
+    + an ALERT notification — there is no `FAILING` SMART value.
+  Note: the CLI formatters must read BigInt size fields with `bigint_f64`/
+  `bigint_opt` (string-or-number aware), **not** `as_i64`/`as_f64` — the latter
+  silently render `0` against real (string) data (fixed in `src/cli/format.rs`;
+  see the bigint regression tests there).
+- **Standalone server** (`examples/mock_unraid.rs`): `just mock [scenario]` or
+  `cargo run --example mock_unraid -- --scenario degraded --port 8999`. Point
+  `UNRAID_API_URL` at `http://127.0.0.1:PORT/graphql`, set any `UNRAID_API_KEY`,
+  then drive the real `runraid` CLI / `serve mcp` / Claude skill. Hot-swap the
+  scenario live: `curl -XPOST http://127.0.0.1:PORT/scenario/disk-failing`.
+  `--require-key KEY` exercises the upstream-auth (401) path.
+- **Schema-as-contract guard** (`tests/schema_contract.rs`). The vendored SDL
+  `tests/fixtures/unraid-schema.graphql` (provenance comment at the top — copied
+  from `unraid/api`, re-copy when Unraid ships an API change) is the source of
+  truth. The test validates **every query** `graphql.rs` sends and **every
+  fixture leaf** (scalar JSON-type + enum membership) against it via
+  `apollo-compiler`. This is what mechanically catches drift — it already caught
+  two real production query bugs (`docker_logs` selected the non-existent
+  `logLineUrl` and treated `lines` as a scalar; `ups` queried `loadPercent`
+  instead of `loadPercentage`). It is **lenient on nullability** (the real server
+  violates its own non-null types, e.g. `flash.guid`) and does **not** prove a
+  real server returns fixture-shaped data — only a live test does.
 
 ## CLI ↔ MCP action parity
 

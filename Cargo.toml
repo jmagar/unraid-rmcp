@@ -55,8 +55,13 @@ anyhow = "1"
 thiserror = "2"
 dotenvy = "0.15.7"
 
+# GraphQL query AST parsing — used only by the offline mock's query router
+# (src/mock.rs) to classify a query by its real root field. Optional: pulled in
+# only with the `test-support` feature, never in a release build.
+graphql-parser = { version = "0.4", optional = true }
+
 [features]
-test-support = []
+test-support = ["dep:graphql-parser"]
 
 [dev-dependencies]
 unraid-mcp = { path = ".", features = ["test-support"] }
@@ -67,3 +72,6 @@ rmcp = { version = "1.6.0", default-features = false, features = [
   "transport-child-process",
 ] }
 wiremock = "0.6"
+# Schema-as-contract test (tests/schema_contract.rs): validates queries +
+# fixtures against the vendored Unraid SDL.
+apollo-compiler = "1"

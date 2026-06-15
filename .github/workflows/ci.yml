@@ -38,7 +38,9 @@ jobs:
       - uses: Swatinem/rust-cache@v2
 
       - name: Clippy
-        run: cargo clippy -- -D warnings
+        # --all-targets + test-support so the offline mock, example, and test
+        # code (gated behind the feature) are linted too, not just the lib/bin.
+        run: cargo clippy --all-targets --features test-support -- -D warnings
 
   test:
     name: Tests
