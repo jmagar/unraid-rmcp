@@ -298,6 +298,11 @@ async fn dispatch_action(state: &AppState, action: &str, args: &Value) -> Result
         "get_api_key_creation_form_schema" => {
             svc!(state.service.get_api_key_creation_form_schema())
         }
+        "config" => svc!(state.service.config()),
+        "settings" => svc!(state.service.settings()),
+        "display" => svc!(state.service.display()),
+        "customization" => svc!(state.service.customization()),
+        "internal_boot_context" => svc!(state.service.internal_boot_context()),
 
         "status" => {
             let snap = state.counters.snapshot();

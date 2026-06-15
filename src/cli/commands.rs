@@ -45,6 +45,11 @@ pub enum CliCommand {
     ApiKeyPossiblePermissions,
     GetAvailableAuthActions,
     GetApiKeyCreationFormSchema,
+    Config,
+    Settings,
+    Display,
+    Customization,
+    InternalBootContext,
     Doctor,
     Setup(SetupCommand),
 }

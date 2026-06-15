@@ -166,6 +166,26 @@ pub(super) const ACTIONS: &[ActionSpec] = &[
         read_only: true,
     },
     ActionSpec {
+        name: "config",
+        read_only: true,
+    },
+    ActionSpec {
+        name: "settings",
+        read_only: true,
+    },
+    ActionSpec {
+        name: "display",
+        read_only: true,
+    },
+    ActionSpec {
+        name: "customization",
+        read_only: true,
+    },
+    ActionSpec {
+        name: "internal_boot_context",
+        read_only: true,
+    },
+    ActionSpec {
         name: "status",
         read_only: true,
     },

@@ -259,6 +259,36 @@ impl UnraidClient {
             .await
     }
 
+    pub async fn config(&self) -> Result<Value> {
+        use cynic::QueryBuilder;
+        self.run_typed(crate::gql_typed::ConfigQuery::build(()))
+            .await
+    }
+
+    pub async fn settings(&self) -> Result<Value> {
+        use cynic::QueryBuilder;
+        self.run_typed(crate::gql_typed::SettingsQuery::build(()))
+            .await
+    }
+
+    pub async fn display(&self) -> Result<Value> {
+        use cynic::QueryBuilder;
+        self.run_typed(crate::gql_typed::DisplayQuery::build(()))
+            .await
+    }
+
+    pub async fn customization(&self) -> Result<Value> {
+        use cynic::QueryBuilder;
+        self.run_typed(crate::gql_typed::CustomizationQuery::build(()))
+            .await
+    }
+
+    pub async fn internal_boot_context(&self) -> Result<Value> {
+        use cynic::QueryBuilder;
+        self.run_typed(crate::gql_typed::InternalBootContextQuery::build(()))
+            .await
+    }
+
     // ── queries ───────────────────────────────────────────────────────────────
 
     pub async fn array(&self) -> Result<Value> {

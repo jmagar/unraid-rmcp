@@ -969,5 +969,128 @@
         "roles": []
       }
     }
+  },
+  "config": {
+    "config": {
+      "id": "config-1",
+      "valid": true,
+      "error": null
+    }
+  },
+  "settings": {
+    "settings": {
+      "id": "settings-1",
+      "unified": {
+        "id": "unified-1",
+        "dataSchema": {
+          "type": "object",
+          "properties": {
+            "api": {
+              "type": "object"
+            }
+          }
+        },
+        "uiSchema": {
+          "type": "VerticalLayout",
+          "elements": []
+        },
+        "values": {
+          "api": {
+            "sandbox": false
+          }
+        }
+      },
+      "api": {
+        "version": "4.6.0",
+        "extraOrigins": [
+          "https://tower.local"
+        ],
+        "sandbox": false,
+        "ssoSubIds": [],
+        "plugins": [
+          "unraid-api"
+        ]
+      }
+    }
+  },
+  "display": {
+    "display": {
+      "id": "display-1",
+      "case": {
+        "id": "case-1",
+        "url": "/webGui/images/case-model.png",
+        "icon": "custom",
+        "error": ""
+      },
+      "theme": "white",
+      "unit": "CELSIUS",
+      "scale": true,
+      "tabs": true,
+      "resize": false,
+      "wwn": false,
+      "total": true,
+      "usage": true,
+      "text": false,
+      "warning": 45,
+      "critical": 55,
+      "hot": 45,
+      "max": 90,
+      "locale": "en_US"
+    }
+  },
+  "customization": {
+    "customization": {
+      "activationCode": {
+        "code": null
+      },
+      "onboarding": {
+        "status": "COMPLETED",
+        "isPartnerBuild": false,
+        "completed": true,
+        "completedAtVersion": "7.0.0",
+        "shouldOpen": false
+      },
+      "availableLanguages": [
+        {
+          "code": "en_US",
+          "name": "English (US)",
+          "url": "https://raw.githubusercontent.com/unraid/lang-en_US/master/en_US.xml"
+        },
+        {
+          "code": "de_DE",
+          "name": "Deutsch",
+          "url": "https://raw.githubusercontent.com/unraid/lang-de_DE/master/de_DE.xml"
+        }
+      ]
+    }
+  },
+  "internal_boot_context": {
+    "internalBootContext": {
+      "arrayStopped": true,
+      "bootEligible": true,
+      "bootedFromFlashWithInternalBootSetup": false,
+      "enableBootTransfer": null,
+      "reservedNames": [
+        "boot",
+        "disk1",
+        "cache"
+      ],
+      "shareNames": [
+        "media",
+        "appdata"
+      ],
+      "poolNames": [
+        "cache"
+      ],
+      "driveWarnings": [
+        {
+          "diskId": "Samsung_SSD_980-1",
+          "device": "/dev/nvme0n1",
+          "warnings": [
+            "Drive contains an existing filesystem"
+          ]
+        }
+      ]
+    }
   }
 }

@@ -384,6 +384,180 @@ pub enum Resource {
     Welcome,
 }
 
+// ── config / settings / display / customization / internalBootContext ─────────
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(graphql_type = "Query")]
+#[serde(rename_all = "camelCase")]
+pub struct ConfigQuery {
+    pub config: Config,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Config {
+    pub id: PrefixedID,
+    pub valid: Option<bool>,
+    pub error: Option<String>,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(graphql_type = "Query")]
+#[serde(rename_all = "camelCase")]
+pub struct SettingsQuery {
+    pub settings: Settings,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Settings {
+    pub id: PrefixedID,
+    pub unified: UnifiedSettings,
+    pub api: ApiConfig,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(rename_all = "camelCase")]
+#[serde(rename_all = "camelCase")]
+pub struct UnifiedSettings {
+    pub id: PrefixedID,
+    pub data_schema: Json,
+    pub ui_schema: Json,
+    pub values: Json,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(rename_all = "camelCase")]
+#[serde(rename_all = "camelCase")]
+pub struct ApiConfig {
+    pub version: String,
+    pub extra_origins: Vec<String>,
+    pub sandbox: Option<bool>,
+    pub sso_sub_ids: Vec<String>,
+    pub plugins: Vec<String>,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(graphql_type = "Query")]
+#[serde(rename_all = "camelCase")]
+pub struct DisplayQuery {
+    pub display: InfoDisplay,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct InfoDisplay {
+    pub id: PrefixedID,
+    pub case: InfoDisplayCase,
+    pub theme: ThemeName,
+    pub unit: Temperature,
+    pub scale: bool,
+    pub tabs: bool,
+    pub resize: bool,
+    pub wwn: bool,
+    pub total: bool,
+    pub usage: bool,
+    pub text: bool,
+    pub warning: i32,
+    pub critical: i32,
+    pub hot: i32,
+    pub max: Option<i32>,
+    pub locale: Option<String>,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct InfoDisplayCase {
+    pub id: PrefixedID,
+    pub url: String,
+    pub icon: String,
+    pub error: String,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(graphql_type = "Query")]
+#[serde(rename_all = "camelCase")]
+pub struct CustomizationQuery {
+    pub customization: Option<Customization>,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(rename_all = "camelCase")]
+#[serde(rename_all = "camelCase")]
+pub struct Customization {
+    pub activation_code: Option<ActivationCode>,
+    pub onboarding: Onboarding,
+    pub available_languages: Option<Vec<Language>>,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct ActivationCode {
+    pub code: Option<String>,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(rename_all = "camelCase")]
+#[serde(rename_all = "camelCase")]
+pub struct Onboarding {
+    pub status: OnboardingStatus,
+    pub is_partner_build: bool,
+    pub completed: bool,
+    pub completed_at_version: Option<String>,
+    pub should_open: bool,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct Language {
+    pub code: String,
+    pub name: String,
+    pub url: Option<String>,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(graphql_type = "Query")]
+#[serde(rename_all = "camelCase")]
+pub struct InternalBootContextQuery {
+    pub internal_boot_context: OnboardingInternalBootContext,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(rename_all = "camelCase")]
+#[serde(rename_all = "camelCase")]
+pub struct OnboardingInternalBootContext {
+    pub array_stopped: bool,
+    pub boot_eligible: Option<bool>,
+    pub booted_from_flash_with_internal_boot_setup: bool,
+    pub enable_boot_transfer: Option<String>,
+    pub reserved_names: Vec<String>,
+    pub share_names: Vec<String>,
+    pub pool_names: Vec<String>,
+    pub drive_warnings: Vec<OnboardingInternalBootDriveWarning>,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(rename_all = "camelCase")]
+#[serde(rename_all = "camelCase")]
+pub struct OnboardingInternalBootDriveWarning {
+    pub disk_id: String,
+    pub device: String,
+    pub warnings: Vec<String>,
+}
+
+/// `ThemeName` SDL values are lowercase, so per-variant renames (the macro can't).
+#[derive(cynic::Enum, Clone, Copy, Debug)]
+pub enum ThemeName {
+    #[cynic(rename = "azure")]
+    Azure,
+    #[cynic(rename = "black")]
+    Black,
+    #[cynic(rename = "gray")]
+    Gray,
+    #[cynic(rename = "white")]
+    White,
+}
+
 // ── enums (cynic checks them vs the SDL; serde does the JSON round-trip) ──────
 
 macro_rules! gql_enum {
@@ -472,4 +646,16 @@ gql_enum!(AuthAction {
     UpdateOwn,
     DeleteAny,
     DeleteOwn,
+});
+
+// Config/onboarding enums (config batch).
+gql_enum!(OnboardingStatus {
+    Incomplete,
+    Upgrade,
+    Downgrade,
+    Completed
+});
+gql_enum!(Temperature {
+    Celsius,
+    Fahrenheit
 });

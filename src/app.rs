@@ -165,6 +165,26 @@ impl UnraidService {
         self.client.get_api_key_creation_form_schema().await
     }
 
+    pub async fn config(&self) -> Result<Value> {
+        self.client.config().await
+    }
+
+    pub async fn settings(&self) -> Result<Value> {
+        self.client.settings().await
+    }
+
+    pub async fn display(&self) -> Result<Value> {
+        self.client.display().await
+    }
+
+    pub async fn customization(&self) -> Result<Value> {
+        self.client.customization().await
+    }
+
+    pub async fn internal_boot_context(&self) -> Result<Value> {
+        self.client.internal_boot_context().await
+    }
+
     pub async fn rclone(&self) -> Result<Value> {
         self.client.rclone().await
     }

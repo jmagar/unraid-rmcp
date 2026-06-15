@@ -69,6 +69,14 @@ pub async fn run(service: &UnraidService, cmd: CliCommand, json: bool) -> Result
             "get_api_key_creation_form_schema",
             service.get_api_key_creation_form_schema().await?,
         ),
+        CliCommand::Config => ("config", service.config().await?),
+        CliCommand::Settings => ("settings", service.settings().await?),
+        CliCommand::Display => ("display", service.display().await?),
+        CliCommand::Customization => ("customization", service.customization().await?),
+        CliCommand::InternalBootContext => (
+            "internal_boot_context",
+            service.internal_boot_context().await?,
+        ),
         // Doctor and setup are intercepted in main.rs before reaching dispatch.
         CliCommand::Doctor | CliCommand::Setup(_) => {
             unreachable!("doctor/setup are handled before service construction")

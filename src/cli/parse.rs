@@ -62,6 +62,11 @@ impl CliCommand {
             ["get-api-key-creation-form-schema"] | ["api-key-form-schema"] => {
                 Self::GetApiKeyCreationFormSchema
             }
+            ["config"] => Self::Config,
+            ["settings"] => Self::Settings,
+            ["display"] => Self::Display,
+            ["customization"] => Self::Customization,
+            ["internal-boot-context"] | ["boot-context"] => Self::InternalBootContext,
             ["doctor"] => Self::Doctor,
             ["setup", "check"] => Self::Setup(SetupCommand::Check),
             ["setup", "repair"] => Self::Setup(SetupCommand::Repair),
