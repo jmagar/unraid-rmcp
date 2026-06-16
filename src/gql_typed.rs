@@ -1034,6 +1034,146 @@ pub struct DeleteArchivedNotificationsMutation {
     pub delete_archived_notifications: NotificationOverview,
 }
 
+// ── mutations: vm namespace (id -> Boolean) ──
+
+#[derive(cynic::QueryVariables)]
+pub struct VmIdVars {
+    pub id: PrefixedID,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(graphql_type = "Mutation", variables = "VmIdVars")]
+#[serde(rename_all = "camelCase")]
+pub struct VmStartMutation {
+    pub vm: VmStartNs,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(
+    graphql_type = "VmMutations",
+    variables = "VmIdVars",
+    rename_all = "camelCase"
+)]
+#[serde(rename_all = "camelCase")]
+pub struct VmStartNs {
+    #[arguments(id: $id)]
+    pub start: bool,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(graphql_type = "Mutation", variables = "VmIdVars")]
+#[serde(rename_all = "camelCase")]
+pub struct VmStopMutation {
+    pub vm: VmStopNs,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(
+    graphql_type = "VmMutations",
+    variables = "VmIdVars",
+    rename_all = "camelCase"
+)]
+#[serde(rename_all = "camelCase")]
+pub struct VmStopNs {
+    #[arguments(id: $id)]
+    pub stop: bool,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(graphql_type = "Mutation", variables = "VmIdVars")]
+#[serde(rename_all = "camelCase")]
+pub struct VmPauseMutation {
+    pub vm: VmPauseNs,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(
+    graphql_type = "VmMutations",
+    variables = "VmIdVars",
+    rename_all = "camelCase"
+)]
+#[serde(rename_all = "camelCase")]
+pub struct VmPauseNs {
+    #[arguments(id: $id)]
+    pub pause: bool,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(graphql_type = "Mutation", variables = "VmIdVars")]
+#[serde(rename_all = "camelCase")]
+pub struct VmResumeMutation {
+    pub vm: VmResumeNs,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(
+    graphql_type = "VmMutations",
+    variables = "VmIdVars",
+    rename_all = "camelCase"
+)]
+#[serde(rename_all = "camelCase")]
+pub struct VmResumeNs {
+    #[arguments(id: $id)]
+    pub resume: bool,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(graphql_type = "Mutation", variables = "VmIdVars")]
+#[serde(rename_all = "camelCase")]
+pub struct VmForceStopMutation {
+    pub vm: VmForceStopNs,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(
+    graphql_type = "VmMutations",
+    variables = "VmIdVars",
+    rename_all = "camelCase"
+)]
+#[serde(rename_all = "camelCase")]
+pub struct VmForceStopNs {
+    #[arguments(id: $id)]
+    pub force_stop: bool,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(graphql_type = "Mutation", variables = "VmIdVars")]
+#[serde(rename_all = "camelCase")]
+pub struct VmRebootMutation {
+    pub vm: VmRebootNs,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(
+    graphql_type = "VmMutations",
+    variables = "VmIdVars",
+    rename_all = "camelCase"
+)]
+#[serde(rename_all = "camelCase")]
+pub struct VmRebootNs {
+    #[arguments(id: $id)]
+    pub reboot: bool,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(graphql_type = "Mutation", variables = "VmIdVars")]
+#[serde(rename_all = "camelCase")]
+pub struct VmResetMutation {
+    pub vm: VmResetNs,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(
+    graphql_type = "VmMutations",
+    variables = "VmIdVars",
+    rename_all = "camelCase"
+)]
+#[serde(rename_all = "camelCase")]
+pub struct VmResetNs {
+    #[arguments(id: $id)]
+    pub reset: bool,
+}
+
 // ── enums (cynic checks them vs the SDL; serde does the JSON round-trip) ──────
 
 macro_rules! gql_enum {

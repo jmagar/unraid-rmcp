@@ -53,7 +53,36 @@ fn raw_overlay(name: &str) -> Option<&'static str> {
 /// turns into a GraphQL `errors` response (exactly as a real server would).
 pub fn classify_query(query: &str) -> Option<std::borrow::Cow<'static, str>> {
     use std::borrow::Cow;
-    let (root, subfields) = root_field(query)?;
+    let (root, subfields, is_mutation) = root_field(query)?;
+
+    // Namespaced mutations (`mutation { vm { start } }`) share their root field
+    // with a query (`query { vms }` / there is no `vm` query, but `array`/`docker`
+    // collide). Disambiguate by operation type + sub-field, so the action key is
+    // `<namespace>_<sub>` (e.g. `vm_start`, `array_set_state`).
+    const NS: &[&str] = &[
+        "array",
+        "docker",
+        "vm",
+        "parityCheck",
+        "apiKey",
+        "rclone",
+        "customization",
+        "onboarding",
+        "unraidPlugins",
+    ];
+    if is_mutation {
+        if NS.contains(&root) {
+            if let Some(sub) = subfields.first() {
+                return Some(Cow::Owned(format!(
+                    "{}_{}",
+                    to_snake_case(root),
+                    to_snake_case(sub)
+                )));
+            }
+        }
+        return Some(Cow::Owned(to_snake_case(root)));
+    }
+
     Some(match root {
         "docker" if subfields.contains(&"logs") => Cow::Borrowed("docker_logs"),
         "upsDevices" => Cow::Borrowed("ups"),
@@ -91,14 +120,16 @@ fn to_snake_case(s: &str) -> String {
 /// Parse `query` and return its first operation's root field name together with
 /// that field's immediate sub-field names. `None` if the query doesn't parse or
 /// has no field selection at the root.
-fn root_field(query: &str) -> Option<(&str, Vec<&str>)> {
+fn root_field(query: &str) -> Option<(&str, Vec<&str>, bool)> {
     let doc = graphql_parser::parse_query::<&str>(query).ok()?;
     doc.definitions.iter().find_map(|def| {
-        let selection_set = match def {
-            Definition::Operation(OperationDefinition::Query(q)) => &q.selection_set,
-            Definition::Operation(OperationDefinition::SelectionSet(s)) => s,
-            Definition::Operation(OperationDefinition::Mutation(m)) => &m.selection_set,
-            Definition::Operation(OperationDefinition::Subscription(s)) => &s.selection_set,
+        let (selection_set, is_mutation) = match def {
+            Definition::Operation(OperationDefinition::Query(q)) => (&q.selection_set, false),
+            Definition::Operation(OperationDefinition::SelectionSet(s)) => (s, false),
+            Definition::Operation(OperationDefinition::Mutation(m)) => (&m.selection_set, true),
+            Definition::Operation(OperationDefinition::Subscription(s)) => {
+                (&s.selection_set, false)
+            }
             Definition::Fragment(_) => return None,
         };
         let field = selection_set.items.iter().find_map(|s| match s {
@@ -114,7 +145,7 @@ fn root_field(query: &str) -> Option<(&str, Vec<&str>)> {
                 _ => None,
             })
             .collect();
-        Some((field.name, subfields))
+        Some((field.name, subfields, is_mutation))
     })
 }
 

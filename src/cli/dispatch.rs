@@ -132,6 +132,13 @@ pub async fn run(service: &UnraidService, cmd: CliCommand, json: bool) -> Result
                 .create_notification(&title, &subject, &description, &importance, link.as_deref())
                 .await?,
         ),
+        CliCommand::VmStart(id) => ("vm_start", service.vm_start(&id).await?),
+        CliCommand::VmStop(id) => ("vm_stop", service.vm_stop(&id).await?),
+        CliCommand::VmPause(id) => ("vm_pause", service.vm_pause(&id).await?),
+        CliCommand::VmResume(id) => ("vm_resume", service.vm_resume(&id).await?),
+        CliCommand::VmForceStop(id) => ("vm_force_stop", service.vm_force_stop(&id).await?),
+        CliCommand::VmReboot(id) => ("vm_reboot", service.vm_reboot(&id).await?),
+        CliCommand::VmReset(id) => ("vm_reset", service.vm_reset(&id).await?),
         // Doctor and setup are intercepted in main.rs before reaching dispatch.
         CliCommand::Doctor | CliCommand::Setup(_) => {
             unreachable!("doctor/setup are handled before service construction")

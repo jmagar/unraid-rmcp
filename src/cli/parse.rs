@@ -100,6 +100,13 @@ impl CliCommand {
                     link: rest.first().map(|s| s.to_string()),
                 }
             }
+            ["vm-start", id] => Self::VmStart(id.to_string()),
+            ["vm-stop", id] => Self::VmStop(id.to_string()),
+            ["vm-pause", id] => Self::VmPause(id.to_string()),
+            ["vm-resume", id] => Self::VmResume(id.to_string()),
+            ["vm-force-stop", id] => Self::VmForceStop(id.to_string()),
+            ["vm-reboot", id] => Self::VmReboot(id.to_string()),
+            ["vm-reset", id] => Self::VmReset(id.to_string()),
             ["doctor"] => Self::Doctor,
             ["setup", "check"] => Self::Setup(SetupCommand::Check),
             ["setup", "repair"] => Self::Setup(SetupCommand::Repair),

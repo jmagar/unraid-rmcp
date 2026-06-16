@@ -207,6 +207,7 @@ pub mod testing {
                         "action": "create_notification",
                         "title": "T", "subject": "S", "description": "D", "importance": "INFO"
                     }),
+                    n if n.starts_with("vm_") => json!({ "action": name, "id": "vm-win11" }),
                     _ => json!({ "action": name }),
                 };
                 (name, args)

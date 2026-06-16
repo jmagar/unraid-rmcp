@@ -77,6 +77,13 @@ pub enum CliCommand {
         importance: String,
         link: Option<String>,
     },
+    VmStart(String),
+    VmStop(String),
+    VmPause(String),
+    VmResume(String),
+    VmForceStop(String),
+    VmReboot(String),
+    VmReset(String),
     Doctor,
     Setup(SetupCommand),
 }

@@ -397,6 +397,34 @@ async fn dispatch_action(state: &AppState, action: &str, args: &Value) -> Result
                 link.as_deref()
             ))
         }
+        "vm_start" => {
+            let id = require_id(args, "vm_start")?;
+            svc!(state.service.vm_start(&id))
+        }
+        "vm_stop" => {
+            let id = require_id(args, "vm_stop")?;
+            svc!(state.service.vm_stop(&id))
+        }
+        "vm_pause" => {
+            let id = require_id(args, "vm_pause")?;
+            svc!(state.service.vm_pause(&id))
+        }
+        "vm_resume" => {
+            let id = require_id(args, "vm_resume")?;
+            svc!(state.service.vm_resume(&id))
+        }
+        "vm_force_stop" => {
+            let id = require_id(args, "vm_force_stop")?;
+            svc!(state.service.vm_force_stop(&id))
+        }
+        "vm_reboot" => {
+            let id = require_id(args, "vm_reboot")?;
+            svc!(state.service.vm_reboot(&id))
+        }
+        "vm_reset" => {
+            let id = require_id(args, "vm_reset")?;
+            svc!(state.service.vm_reset(&id))
+        }
 
         "status" => {
             let snap = state.counters.snapshot();

@@ -465,6 +465,69 @@ impl UnraidClient {
         .await
     }
 
+    pub async fn vm_start(&self, id: &str) -> Result<Value> {
+        use crate::gql_typed::{PrefixedID, VmIdVars, VmStartMutation};
+        use cynic::MutationBuilder;
+        self.run_typed(VmStartMutation::build(VmIdVars {
+            id: PrefixedID(id.to_string()),
+        }))
+        .await
+    }
+
+    pub async fn vm_stop(&self, id: &str) -> Result<Value> {
+        use crate::gql_typed::{PrefixedID, VmIdVars, VmStopMutation};
+        use cynic::MutationBuilder;
+        self.run_typed(VmStopMutation::build(VmIdVars {
+            id: PrefixedID(id.to_string()),
+        }))
+        .await
+    }
+
+    pub async fn vm_pause(&self, id: &str) -> Result<Value> {
+        use crate::gql_typed::{PrefixedID, VmIdVars, VmPauseMutation};
+        use cynic::MutationBuilder;
+        self.run_typed(VmPauseMutation::build(VmIdVars {
+            id: PrefixedID(id.to_string()),
+        }))
+        .await
+    }
+
+    pub async fn vm_resume(&self, id: &str) -> Result<Value> {
+        use crate::gql_typed::{PrefixedID, VmIdVars, VmResumeMutation};
+        use cynic::MutationBuilder;
+        self.run_typed(VmResumeMutation::build(VmIdVars {
+            id: PrefixedID(id.to_string()),
+        }))
+        .await
+    }
+
+    pub async fn vm_force_stop(&self, id: &str) -> Result<Value> {
+        use crate::gql_typed::{PrefixedID, VmForceStopMutation, VmIdVars};
+        use cynic::MutationBuilder;
+        self.run_typed(VmForceStopMutation::build(VmIdVars {
+            id: PrefixedID(id.to_string()),
+        }))
+        .await
+    }
+
+    pub async fn vm_reboot(&self, id: &str) -> Result<Value> {
+        use crate::gql_typed::{PrefixedID, VmIdVars, VmRebootMutation};
+        use cynic::MutationBuilder;
+        self.run_typed(VmRebootMutation::build(VmIdVars {
+            id: PrefixedID(id.to_string()),
+        }))
+        .await
+    }
+
+    pub async fn vm_reset(&self, id: &str) -> Result<Value> {
+        use crate::gql_typed::{PrefixedID, VmIdVars, VmResetMutation};
+        use cynic::MutationBuilder;
+        self.run_typed(VmResetMutation::build(VmIdVars {
+            id: PrefixedID(id.to_string()),
+        }))
+        .await
+    }
+
     // ── queries ───────────────────────────────────────────────────────────────
 
     pub async fn array(&self) -> Result<Value> {

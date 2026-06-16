@@ -278,6 +278,34 @@ impl UnraidService {
             .await
     }
 
+    pub async fn vm_start(&self, id: &str) -> Result<Value> {
+        self.client.vm_start(id).await
+    }
+
+    pub async fn vm_stop(&self, id: &str) -> Result<Value> {
+        self.client.vm_stop(id).await
+    }
+
+    pub async fn vm_pause(&self, id: &str) -> Result<Value> {
+        self.client.vm_pause(id).await
+    }
+
+    pub async fn vm_resume(&self, id: &str) -> Result<Value> {
+        self.client.vm_resume(id).await
+    }
+
+    pub async fn vm_force_stop(&self, id: &str) -> Result<Value> {
+        self.client.vm_force_stop(id).await
+    }
+
+    pub async fn vm_reboot(&self, id: &str) -> Result<Value> {
+        self.client.vm_reboot(id).await
+    }
+
+    pub async fn vm_reset(&self, id: &str) -> Result<Value> {
+        self.client.vm_reset(id).await
+    }
+
     pub async fn rclone(&self) -> Result<Value> {
         self.client.rclone().await
     }

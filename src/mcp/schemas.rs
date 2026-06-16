@@ -279,6 +279,34 @@ pub(super) const ACTIONS: &[ActionSpec] = &[
         scope: Scope::Write,
     },
     ActionSpec {
+        name: "vm_start",
+        scope: Scope::Write,
+    },
+    ActionSpec {
+        name: "vm_stop",
+        scope: Scope::Write,
+    },
+    ActionSpec {
+        name: "vm_pause",
+        scope: Scope::Write,
+    },
+    ActionSpec {
+        name: "vm_resume",
+        scope: Scope::Write,
+    },
+    ActionSpec {
+        name: "vm_force_stop",
+        scope: Scope::Write,
+    },
+    ActionSpec {
+        name: "vm_reboot",
+        scope: Scope::Write,
+    },
+    ActionSpec {
+        name: "vm_reset",
+        scope: Scope::Write,
+    },
+    ActionSpec {
         name: "status",
         scope: Scope::Read,
     },

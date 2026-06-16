@@ -1517,5 +1517,40 @@
       "timestamp": "2026-06-15T18:00:00.000Z",
       "formattedTimestamp": "Jun 15, 2026 18:00"
     }
+  },
+  "vm_start": {
+    "vm": {
+      "start": true
+    }
+  },
+  "vm_stop": {
+    "vm": {
+      "stop": true
+    }
+  },
+  "vm_pause": {
+    "vm": {
+      "pause": true
+    }
+  },
+  "vm_resume": {
+    "vm": {
+      "resume": true
+    }
+  },
+  "vm_force_stop": {
+    "vm": {
+      "forceStop": true
+    }
+  },
+  "vm_reboot": {
+    "vm": {
+      "reboot": true
+    }
+  },
+  "vm_reset": {
+    "vm": {
+      "reset": true
+    }
   }
 }
