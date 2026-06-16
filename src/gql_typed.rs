@@ -1376,6 +1376,275 @@ pub struct DockerUpdateAllContainersNs {
     pub update_all_containers: Vec<DockerContainerRef>,
 }
 
+// ── mutations: array namespace ───────────────────────────────────────────────
+//
+// `mutation { array { <op> } }`. Same two-struct-per-op shape as the VM
+// namespace: a `Mutation`-root struct selecting the `array` field, and an
+// `ArrayMutations`-typed namespace struct selecting the op with #[arguments(...)].
+// setState/addDiskToArray/removeDiskFromArray return UnraidArray! -> UnraidArrayRef
+// (minimal { id state }); mount/unmount return ArrayDisk! -> ArrayDiskRef
+// ({ id name status }); clearArrayDiskStatistics returns Boolean! -> bool.
+
+/// Minimal `UnraidArray` selection for mutation results ({ id state }).
+/// Distinct from the read-path `UnraidArray` struct because a cynic struct maps
+/// to a *selection*, not a type.
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(graphql_type = "UnraidArray", rename_all = "camelCase")]
+#[serde(rename_all = "camelCase")]
+pub struct UnraidArrayRef {
+    pub id: PrefixedID,
+    pub state: ArrayState,
+}
+
+/// Minimal `ArrayDisk` selection for mount/unmount results ({ id name status }).
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(graphql_type = "ArrayDisk", rename_all = "camelCase")]
+#[serde(rename_all = "camelCase")]
+pub struct ArrayDiskRef {
+    pub id: PrefixedID,
+    pub name: Option<String>,
+    pub status: Option<ArrayDiskStatus>,
+}
+
+// input objects
+
+#[derive(cynic::InputObject, Debug, Clone)]
+#[cynic(rename_all = "camelCase")]
+pub struct ArrayStateInput {
+    pub desired_state: ArrayStateInputState,
+}
+
+#[derive(cynic::InputObject, Debug, Clone)]
+#[cynic(rename_all = "camelCase")]
+pub struct ArrayDiskInput {
+    pub id: PrefixedID,
+    pub slot: Option<i32>,
+}
+
+// arg-bearing variables
+
+#[derive(cynic::QueryVariables)]
+pub struct ArrayStateInputVars {
+    pub input: ArrayStateInput,
+}
+
+#[derive(cynic::QueryVariables)]
+pub struct ArrayDiskInputVars {
+    pub input: ArrayDiskInput,
+}
+
+#[derive(cynic::QueryVariables)]
+pub struct ArrayDiskIdVars {
+    pub id: PrefixedID,
+}
+
+// setState(input: ArrayStateInput!): UnraidArray!
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(graphql_type = "Mutation", variables = "ArrayStateInputVars")]
+#[serde(rename_all = "camelCase")]
+pub struct ArraySetStateMutation {
+    pub array: ArraySetStateNs,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(
+    graphql_type = "ArrayMutations",
+    variables = "ArrayStateInputVars",
+    rename_all = "camelCase"
+)]
+#[serde(rename_all = "camelCase")]
+pub struct ArraySetStateNs {
+    #[arguments(input: $input)]
+    pub set_state: UnraidArrayRef,
+}
+
+// addDiskToArray(input: ArrayDiskInput!): UnraidArray!
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(graphql_type = "Mutation", variables = "ArrayDiskInputVars")]
+#[serde(rename_all = "camelCase")]
+pub struct ArrayAddDiskToArrayMutation {
+    pub array: ArrayAddDiskToArrayNs,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(
+    graphql_type = "ArrayMutations",
+    variables = "ArrayDiskInputVars",
+    rename_all = "camelCase"
+)]
+#[serde(rename_all = "camelCase")]
+pub struct ArrayAddDiskToArrayNs {
+    #[arguments(input: $input)]
+    pub add_disk_to_array: UnraidArrayRef,
+}
+
+// removeDiskFromArray(input: ArrayDiskInput!): UnraidArray!
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(graphql_type = "Mutation", variables = "ArrayDiskInputVars")]
+#[serde(rename_all = "camelCase")]
+pub struct ArrayRemoveDiskFromArrayMutation {
+    pub array: ArrayRemoveDiskFromArrayNs,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(
+    graphql_type = "ArrayMutations",
+    variables = "ArrayDiskInputVars",
+    rename_all = "camelCase"
+)]
+#[serde(rename_all = "camelCase")]
+pub struct ArrayRemoveDiskFromArrayNs {
+    #[arguments(input: $input)]
+    pub remove_disk_from_array: UnraidArrayRef,
+}
+
+// mountArrayDisk(id: PrefixedID!): ArrayDisk!
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(graphql_type = "Mutation", variables = "ArrayDiskIdVars")]
+#[serde(rename_all = "camelCase")]
+pub struct ArrayMountArrayDiskMutation {
+    pub array: ArrayMountArrayDiskNs,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(
+    graphql_type = "ArrayMutations",
+    variables = "ArrayDiskIdVars",
+    rename_all = "camelCase"
+)]
+#[serde(rename_all = "camelCase")]
+pub struct ArrayMountArrayDiskNs {
+    #[arguments(id: $id)]
+    pub mount_array_disk: ArrayDiskRef,
+}
+
+// unmountArrayDisk(id: PrefixedID!): ArrayDisk!
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(graphql_type = "Mutation", variables = "ArrayDiskIdVars")]
+#[serde(rename_all = "camelCase")]
+pub struct ArrayUnmountArrayDiskMutation {
+    pub array: ArrayUnmountArrayDiskNs,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(
+    graphql_type = "ArrayMutations",
+    variables = "ArrayDiskIdVars",
+    rename_all = "camelCase"
+)]
+#[serde(rename_all = "camelCase")]
+pub struct ArrayUnmountArrayDiskNs {
+    #[arguments(id: $id)]
+    pub unmount_array_disk: ArrayDiskRef,
+}
+
+// clearArrayDiskStatistics(id: PrefixedID!): Boolean!
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(graphql_type = "Mutation", variables = "ArrayDiskIdVars")]
+#[serde(rename_all = "camelCase")]
+pub struct ArrayClearArrayDiskStatisticsMutation {
+    pub array: ArrayClearArrayDiskStatisticsNs,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(
+    graphql_type = "ArrayMutations",
+    variables = "ArrayDiskIdVars",
+    rename_all = "camelCase"
+)]
+#[serde(rename_all = "camelCase")]
+pub struct ArrayClearArrayDiskStatisticsNs {
+    #[arguments(id: $id)]
+    pub clear_array_disk_statistics: bool,
+}
+
+// ── mutations: parityCheck namespace ─────────────────────────────────────────
+//
+// `mutation { parityCheck { <op> } }`. start takes (correct: Boolean!); the
+// other three take no args. All return JSON! -> the existing `Json` scalar.
+
+#[derive(cynic::QueryVariables)]
+pub struct ParityCheckStartVars {
+    pub correct: bool,
+}
+
+// start(correct: Boolean!): JSON!
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(graphql_type = "Mutation", variables = "ParityCheckStartVars")]
+#[serde(rename_all = "camelCase")]
+pub struct ParityCheckStartMutation {
+    pub parity_check: ParityCheckStartNs,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(
+    graphql_type = "ParityCheckMutations",
+    variables = "ParityCheckStartVars",
+    rename_all = "camelCase"
+)]
+#[serde(rename_all = "camelCase")]
+pub struct ParityCheckStartNs {
+    #[arguments(correct: $correct)]
+    pub start: Json,
+}
+
+// pause: JSON!
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(graphql_type = "Mutation", rename_all = "camelCase")]
+#[serde(rename_all = "camelCase")]
+pub struct ParityCheckPauseMutation {
+    pub parity_check: ParityCheckPauseNs,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(graphql_type = "ParityCheckMutations", rename_all = "camelCase")]
+#[serde(rename_all = "camelCase")]
+pub struct ParityCheckPauseNs {
+    pub pause: Json,
+}
+
+// resume: JSON!
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(graphql_type = "Mutation", rename_all = "camelCase")]
+#[serde(rename_all = "camelCase")]
+pub struct ParityCheckResumeMutation {
+    pub parity_check: ParityCheckResumeNs,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(graphql_type = "ParityCheckMutations", rename_all = "camelCase")]
+#[serde(rename_all = "camelCase")]
+pub struct ParityCheckResumeNs {
+    pub resume: Json,
+}
+
+// cancel: JSON!
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(graphql_type = "Mutation", rename_all = "camelCase")]
+#[serde(rename_all = "camelCase")]
+pub struct ParityCheckCancelMutation {
+    pub parity_check: ParityCheckCancelNs,
+}
+
+#[derive(cynic::QueryFragment, serde::Serialize)]
+#[cynic(graphql_type = "ParityCheckMutations", rename_all = "camelCase")]
+#[serde(rename_all = "camelCase")]
+pub struct ParityCheckCancelNs {
+    pub cancel: Json,
+}
+
+// new enum (input-side; SDL values are UPPER so SCREAMING_SNAKE rename maps cleanly)
+
 // ── enums (cynic checks them vs the SDL; serde does the JSON round-trip) ──────
 
 macro_rules! gql_enum {
@@ -1528,3 +1797,6 @@ gql_enum!(ContainerState {
     Paused,
     Exited
 });
+
+// Array input enum (array mutation batch).
+gql_enum!(ArrayStateInputState { Start, Stop });

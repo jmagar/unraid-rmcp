@@ -458,6 +458,51 @@ async fn dispatch_action(state: &AppState, action: &str, args: &Value) -> Result
             svc!(state.service.docker_update_containers(&ids))
         }
         "docker_update_all_containers" => svc!(state.service.docker_update_all_containers()),
+        "array_set_state" => {
+            let ds = string_arg(args, "desired_state").ok_or_else(|| {
+                ToolError::InvalidParams(
+                    "\"desired_state\" (START/STOP) is required for action=array_set_state."
+                        .to_string(),
+                )
+            })?;
+            svc!(state.service.array_set_state(&ds))
+        }
+        "array_add_disk_to_array" => {
+            let id = require_id(args, "array_add_disk_to_array")?;
+            svc!(state.service.array_add_disk_to_array(
+                &id,
+                args.get("slot").and_then(|v| v.as_i64()).map(|n| n as i32)
+            ))
+        }
+        "array_remove_disk_from_array" => {
+            let id = require_id(args, "array_remove_disk_from_array")?;
+            svc!(state.service.array_remove_disk_from_array(
+                &id,
+                args.get("slot").and_then(|v| v.as_i64()).map(|n| n as i32)
+            ))
+        }
+        "array_mount_array_disk" => {
+            let id = require_id(args, "array_mount_array_disk")?;
+            svc!(state.service.array_mount_array_disk(&id))
+        }
+        "array_unmount_array_disk" => {
+            let id = require_id(args, "array_unmount_array_disk")?;
+            svc!(state.service.array_unmount_array_disk(&id))
+        }
+        "array_clear_array_disk_statistics" => {
+            let id = require_id(args, "array_clear_array_disk_statistics")?;
+            svc!(state.service.array_clear_array_disk_statistics(&id))
+        }
+        "parity_check_start" => {
+            let correct = args
+                .get("correct")
+                .and_then(|v| v.as_bool())
+                .unwrap_or(false);
+            svc!(state.service.parity_check_start(correct))
+        }
+        "parity_check_pause" => svc!(state.service.parity_check_pause()),
+        "parity_check_resume" => svc!(state.service.parity_check_resume()),
+        "parity_check_cancel" => svc!(state.service.parity_check_cancel()),
 
         "status" => {
             let snap = state.counters.snapshot();

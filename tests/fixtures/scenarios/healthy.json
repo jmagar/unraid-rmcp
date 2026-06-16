@@ -1670,5 +1670,81 @@
         }
       ]
     }
+  },
+  "array_set_state": {
+    "array": {
+      "setState": {
+        "id": "array/1",
+        "state": "STARTED"
+      }
+    }
+  },
+  "array_add_disk_to_array": {
+    "array": {
+      "addDiskToArray": {
+        "id": "array/1",
+        "state": "STOPPED"
+      }
+    }
+  },
+  "array_remove_disk_from_array": {
+    "array": {
+      "removeDiskFromArray": {
+        "id": "array/1",
+        "state": "STOPPED"
+      }
+    }
+  },
+  "array_mount_array_disk": {
+    "array": {
+      "mountArrayDisk": {
+        "id": "disk/sdb",
+        "name": "disk1",
+        "status": "DISK_OK"
+      }
+    }
+  },
+  "array_unmount_array_disk": {
+    "array": {
+      "unmountArrayDisk": {
+        "id": "disk/sdb",
+        "name": "disk1",
+        "status": "DISK_OK"
+      }
+    }
+  },
+  "array_clear_array_disk_statistics": {
+    "array": {
+      "clearArrayDiskStatistics": true
+    }
+  },
+  "parity_check_start": {
+    "parityCheck": {
+      "start": {
+        "status": "started",
+        "correcting": true
+      }
+    }
+  },
+  "parity_check_pause": {
+    "parityCheck": {
+      "pause": {
+        "status": "paused"
+      }
+    }
+  },
+  "parity_check_resume": {
+    "parityCheck": {
+      "resume": {
+        "status": "resumed"
+      }
+    }
+  },
+  "parity_check_cancel": {
+    "parityCheck": {
+      "cancel": {
+        "status": "cancelled"
+      }
+    }
   }
 }

@@ -117,6 +117,22 @@ impl CliCommand {
                 Self::DockerUpdateContainers(ids.iter().map(|s| s.to_string()).collect())
             }
             ["docker-update-all-containers"] => Self::DockerUpdateAllContainers,
+            ["array-set-state", ds] => Self::ArraySetState(ds.to_string()),
+            ["array-add-disk-to-array", id] => Self::ArrayAddDiskToArray(id.to_string()),
+            ["array-remove-disk-from-array", id] => Self::ArrayRemoveDiskFromArray(id.to_string()),
+            ["array-mount-array-disk", id] => Self::ArrayMountArrayDisk(id.to_string()),
+            ["array-unmount-array-disk", id] => Self::ArrayUnmountArrayDisk(id.to_string()),
+            ["array-clear-array-disk-statistics", id] => {
+                Self::ArrayClearArrayDiskStatistics(id.to_string())
+            }
+            ["parity-check-start", rest @ ..] => Self::ParityCheckStart(
+                rest.first()
+                    .map(|c| *c == "correct" || *c == "true")
+                    .unwrap_or(false),
+            ),
+            ["parity-check-pause"] => Self::ParityCheckPause,
+            ["parity-check-resume"] => Self::ParityCheckResume,
+            ["parity-check-cancel"] => Self::ParityCheckCancel,
             ["doctor"] => Self::Doctor,
             ["setup", "check"] => Self::Setup(SetupCommand::Check),
             ["setup", "repair"] => Self::Setup(SetupCommand::Repair),

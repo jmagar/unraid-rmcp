@@ -159,6 +159,38 @@ pub async fn run(service: &UnraidService, cmd: CliCommand, json: bool) -> Result
             "docker_update_all_containers",
             service.docker_update_all_containers().await?,
         ),
+        CliCommand::ArraySetState(ds) => ("array_set_state", service.array_set_state(&ds).await?),
+        CliCommand::ArrayAddDiskToArray(id) => (
+            "array_add_disk_to_array",
+            service.array_add_disk_to_array(&id, None).await?,
+        ),
+        CliCommand::ArrayRemoveDiskFromArray(id) => (
+            "array_remove_disk_from_array",
+            service.array_remove_disk_from_array(&id, None).await?,
+        ),
+        CliCommand::ArrayMountArrayDisk(id) => (
+            "array_mount_array_disk",
+            service.array_mount_array_disk(&id).await?,
+        ),
+        CliCommand::ArrayUnmountArrayDisk(id) => (
+            "array_unmount_array_disk",
+            service.array_unmount_array_disk(&id).await?,
+        ),
+        CliCommand::ArrayClearArrayDiskStatistics(id) => (
+            "array_clear_array_disk_statistics",
+            service.array_clear_array_disk_statistics(&id).await?,
+        ),
+        CliCommand::ParityCheckStart(correct) => (
+            "parity_check_start",
+            service.parity_check_start(correct).await?,
+        ),
+        CliCommand::ParityCheckPause => ("parity_check_pause", service.parity_check_pause().await?),
+        CliCommand::ParityCheckResume => {
+            ("parity_check_resume", service.parity_check_resume().await?)
+        }
+        CliCommand::ParityCheckCancel => {
+            ("parity_check_cancel", service.parity_check_cancel().await?)
+        }
         // Doctor and setup are intercepted in main.rs before reaching dispatch.
         CliCommand::Doctor | CliCommand::Setup(_) => {
             unreachable!("doctor/setup are handled before service construction")

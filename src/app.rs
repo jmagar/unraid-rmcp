@@ -340,6 +340,36 @@ impl UnraidService {
     pub async fn docker_update_all_containers(&self) -> Result<Value> {
         self.client.docker_update_all_containers().await
     }
+    pub async fn array_set_state(&self, desired_state: &str) -> Result<Value> {
+        self.client.array_set_state(desired_state).await
+    }
+    pub async fn array_add_disk_to_array(&self, id: &str, slot: Option<i32>) -> Result<Value> {
+        self.client.array_add_disk_to_array(id, slot).await
+    }
+    pub async fn array_remove_disk_from_array(&self, id: &str, slot: Option<i32>) -> Result<Value> {
+        self.client.array_remove_disk_from_array(id, slot).await
+    }
+    pub async fn array_mount_array_disk(&self, id: &str) -> Result<Value> {
+        self.client.array_mount_array_disk(id).await
+    }
+    pub async fn array_unmount_array_disk(&self, id: &str) -> Result<Value> {
+        self.client.array_unmount_array_disk(id).await
+    }
+    pub async fn array_clear_array_disk_statistics(&self, id: &str) -> Result<Value> {
+        self.client.array_clear_array_disk_statistics(id).await
+    }
+    pub async fn parity_check_start(&self, correct: bool) -> Result<Value> {
+        self.client.parity_check_start(correct).await
+    }
+    pub async fn parity_check_pause(&self) -> Result<Value> {
+        self.client.parity_check_pause().await
+    }
+    pub async fn parity_check_resume(&self) -> Result<Value> {
+        self.client.parity_check_resume().await
+    }
+    pub async fn parity_check_cancel(&self) -> Result<Value> {
+        self.client.parity_check_cancel().await
+    }
 
     pub async fn rclone(&self) -> Result<Value> {
         self.client.rclone().await

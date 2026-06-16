@@ -339,6 +339,46 @@ pub(super) const ACTIONS: &[ActionSpec] = &[
         scope: Scope::Write,
     },
     ActionSpec {
+        name: "array_set_state",
+        scope: Scope::Write,
+    },
+    ActionSpec {
+        name: "array_add_disk_to_array",
+        scope: Scope::Write,
+    },
+    ActionSpec {
+        name: "array_remove_disk_from_array",
+        scope: Scope::Write,
+    },
+    ActionSpec {
+        name: "array_mount_array_disk",
+        scope: Scope::Write,
+    },
+    ActionSpec {
+        name: "array_unmount_array_disk",
+        scope: Scope::Write,
+    },
+    ActionSpec {
+        name: "array_clear_array_disk_statistics",
+        scope: Scope::Write,
+    },
+    ActionSpec {
+        name: "parity_check_start",
+        scope: Scope::Write,
+    },
+    ActionSpec {
+        name: "parity_check_pause",
+        scope: Scope::Write,
+    },
+    ActionSpec {
+        name: "parity_check_resume",
+        scope: Scope::Write,
+    },
+    ActionSpec {
+        name: "parity_check_cancel",
+        scope: Scope::Write,
+    },
+    ActionSpec {
         name: "status",
         scope: Scope::Read,
     },
@@ -436,7 +476,12 @@ pub(super) fn tool_definitions() -> Vec<Value> {
                 "subject": { "type": "string", "description": "Notification subject (create_notification)." },
                 "description": { "type": "string", "description": "Notification body (create_notification)." },
                 "importance": { "type": "string", "enum": ["ALERT", "INFO", "WARNING"], "description": "Notification importance (create_notification)." },
-                "link": { "type": "string", "description": "Optional notification link (create_notification)." }
+                "link": { "type": "string", "description": "Optional notification link (create_notification)." },
+                "desired_state": { "type": "string", "enum": ["START", "STOP"], "description": "Array target state (array_set_state)." },
+                "slot": { "type": "integer", "description": "Array disk slot (array_add/remove_disk_from_array)." },
+                "correct": { "type": "boolean", "description": "Whether the parity check should write corrections (parity_check_start)." },
+                "with_image": { "type": "boolean", "description": "Also remove the image (docker_remove_container)." },
+                "ids": { "type": "array", "items": { "type": "string" }, "description": "Container IDs (docker_update_containers)." }
             },
             "required": ["action"]
         }

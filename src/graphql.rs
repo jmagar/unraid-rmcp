@@ -603,6 +603,108 @@ impl UnraidClient {
         .await
     }
 
+    pub async fn array_set_state(&self, desired_state: &str) -> Result<Value> {
+        use crate::gql_typed::{
+            ArraySetStateMutation, ArrayStateInput, ArrayStateInputState, ArrayStateInputVars,
+        };
+        use cynic::MutationBuilder;
+        let desired_state: ArrayStateInputState = serde_json::from_value(json!(desired_state))
+            .map_err(|e| {
+                UpstreamError::Other(format!("invalid desired_state (START/STOP): {e}"))
+            })?;
+        let input = ArrayStateInput { desired_state };
+        self.run_typed(ArraySetStateMutation::build(ArrayStateInputVars { input }))
+            .await
+    }
+
+    pub async fn array_add_disk_to_array(&self, id: &str, slot: Option<i32>) -> Result<Value> {
+        use crate::gql_typed::{
+            ArrayAddDiskToArrayMutation, ArrayDiskInput, ArrayDiskInputVars, PrefixedID,
+        };
+        use cynic::MutationBuilder;
+        let input = ArrayDiskInput {
+            id: PrefixedID(id.to_string()),
+            slot,
+        };
+        self.run_typed(ArrayAddDiskToArrayMutation::build(ArrayDiskInputVars {
+            input,
+        }))
+        .await
+    }
+
+    pub async fn array_remove_disk_from_array(&self, id: &str, slot: Option<i32>) -> Result<Value> {
+        use crate::gql_typed::{
+            ArrayDiskInput, ArrayDiskInputVars, ArrayRemoveDiskFromArrayMutation, PrefixedID,
+        };
+        use cynic::MutationBuilder;
+        let input = ArrayDiskInput {
+            id: PrefixedID(id.to_string()),
+            slot,
+        };
+        self.run_typed(ArrayRemoveDiskFromArrayMutation::build(
+            ArrayDiskInputVars { input },
+        ))
+        .await
+    }
+
+    pub async fn array_mount_array_disk(&self, id: &str) -> Result<Value> {
+        use crate::gql_typed::{ArrayDiskIdVars, ArrayMountArrayDiskMutation, PrefixedID};
+        use cynic::MutationBuilder;
+        self.run_typed(ArrayMountArrayDiskMutation::build(ArrayDiskIdVars {
+            id: PrefixedID(id.to_string()),
+        }))
+        .await
+    }
+
+    pub async fn array_unmount_array_disk(&self, id: &str) -> Result<Value> {
+        use crate::gql_typed::{ArrayDiskIdVars, ArrayUnmountArrayDiskMutation, PrefixedID};
+        use cynic::MutationBuilder;
+        self.run_typed(ArrayUnmountArrayDiskMutation::build(ArrayDiskIdVars {
+            id: PrefixedID(id.to_string()),
+        }))
+        .await
+    }
+
+    pub async fn array_clear_array_disk_statistics(&self, id: &str) -> Result<Value> {
+        use crate::gql_typed::{
+            ArrayClearArrayDiskStatisticsMutation, ArrayDiskIdVars, PrefixedID,
+        };
+        use cynic::MutationBuilder;
+        self.run_typed(ArrayClearArrayDiskStatisticsMutation::build(
+            ArrayDiskIdVars {
+                id: PrefixedID(id.to_string()),
+            },
+        ))
+        .await
+    }
+
+    pub async fn parity_check_start(&self, correct: bool) -> Result<Value> {
+        use crate::gql_typed::{ParityCheckStartMutation, ParityCheckStartVars};
+        use cynic::MutationBuilder;
+        self.run_typed(ParityCheckStartMutation::build(ParityCheckStartVars {
+            correct,
+        }))
+        .await
+    }
+
+    pub async fn parity_check_pause(&self) -> Result<Value> {
+        use cynic::MutationBuilder;
+        self.run_typed(crate::gql_typed::ParityCheckPauseMutation::build(()))
+            .await
+    }
+
+    pub async fn parity_check_resume(&self) -> Result<Value> {
+        use cynic::MutationBuilder;
+        self.run_typed(crate::gql_typed::ParityCheckResumeMutation::build(()))
+            .await
+    }
+
+    pub async fn parity_check_cancel(&self) -> Result<Value> {
+        use cynic::MutationBuilder;
+        self.run_typed(crate::gql_typed::ParityCheckCancelMutation::build(()))
+            .await
+    }
+
     // ── queries ───────────────────────────────────────────────────────────────
 
     pub async fn array(&self) -> Result<Value> {

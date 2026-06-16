@@ -215,6 +215,9 @@ pub mod testing {
                     n if n.starts_with("docker_") => {
                         json!({ "action": name, "id": "docker/abc123" })
                     }
+                    "array_set_state" => json!({ "action": name, "desired_state": "START" }),
+                    "parity_check_start" => json!({ "action": name, "correct": true }),
+                    n if n.starts_with("array_") => json!({ "action": name, "id": "disk/sdb" }),
                     _ => json!({ "action": name }),
                 };
                 (name, args)
