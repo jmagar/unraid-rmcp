@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.2](https://github.com/jmagar/unraid-rmcp/compare/v0.1.1...v0.1.2) (2026-07-06)
+
+
+### Fixed
+
+* **health:** widen upstream probe timeout to 5s and log error cause ([fcff7b8](https://github.com/jmagar/unraid-rmcp/commit/fcff7b8cb1d3c66411573fa7f670e8c89168c2d1))
+
 ## [Unreleased]
 
 ### Changed
