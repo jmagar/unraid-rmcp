@@ -8,6 +8,8 @@ on:
 
 env:
   CARGO_TERM_COLOR: always
+  CARGO_INCREMENTAL: "0"
+  SOLDR_CACHE_DIR: ${{ github.workspace }}/../.soldr-cache
 
 jobs:
   fmt:
@@ -17,8 +19,10 @@ jobs:
       - uses: actions/checkout@v5
 
       # Pinned to the project MSRV (Cargo.toml rust-version) so CI enforces it.
-      - uses: dtolnay/rust-toolchain@1.90
+      - name: Install Rust + soldr
+        uses: ./.github/actions/setup-rust-soldr
         with:
+          toolchain: "1.90"
           components: rustfmt
 
       - name: Check formatting
@@ -35,11 +39,11 @@ jobs:
       - uses: actions/checkout@v5
 
       # Pinned to the project MSRV (Cargo.toml rust-version) so CI enforces it.
-      - uses: dtolnay/rust-toolchain@1.90
+      - name: Install Rust + soldr
+        uses: ./.github/actions/setup-rust-soldr
         with:
+          toolchain: "1.90"
           components: clippy
-
-      - uses: Swatinem/rust-cache@v2
 
       - name: Clippy
         # --all-targets + test-support so the offline mock, example, and test
@@ -53,9 +57,10 @@ jobs:
       - uses: actions/checkout@v5
 
       # Pinned to the project MSRV (Cargo.toml rust-version) so CI enforces it.
-      - uses: dtolnay/rust-toolchain@1.90
-
-      - uses: Swatinem/rust-cache@v2
+      - name: Install Rust + soldr
+        uses: ./.github/actions/setup-rust-soldr
+        with:
+          toolchain: "1.90"
 
       - name: Install cargo-nextest
         uses: taiki-e/install-action@nextest
@@ -93,7 +98,8 @@ jobs:
 
       # cargo-audit is a CI tool and its current release requires newer Rust
       # than the application's MSRV. Application builds remain pinned above.
-      - uses: dtolnay/rust-toolchain@stable
+      - name: Install Rust + soldr
+        uses: ./.github/actions/setup-rust-soldr
 
       - uses: rustsec/audit-check@v2.0.0
         with:
